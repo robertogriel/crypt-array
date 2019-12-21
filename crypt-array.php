@@ -1,6 +1,6 @@
 <?php
 
-class Crypt
+class Crypto
 {
 
     private $secret = "YOUR_SECRET_HERE";
