@@ -13,7 +13,7 @@
 <br><br>
 #Call the class
 <br><br>
-$object = new Crypt();
+$object = new Crypto();
 <br><br>
 #To encrypt a array:
 <br><br>
@@ -38,3 +38,5 @@ echo $result;
 $result = $object->getDecrypted("3NCRYPT3D STR1NG", 1);
 <br><br>
 echo $result;
+<br><br><br>
+<p>You can see the <a href="https://github.com/robzgf/crypt-array/blob/master/sample.php">sample.php</a> file.
