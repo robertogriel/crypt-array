@@ -2,7 +2,6 @@
 <p>Using this code you can encrypt/decrypt your arrays, like $_POST or any $array that you have, and you can also encrypt/decrypt one string using the same object.</p>
 
 <hr>
-<h2>Install with composer:</h2>
 
 <p>Download the <a  href="https://github.com/robzgf/crypt-array/blob/master/crypt-array.min.php">crypt-array.min.php</a> code or copy the code contents in your php file, and call the method using:</p>
 
