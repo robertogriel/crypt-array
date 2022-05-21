@@ -10,11 +10,12 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "ext-openssl": "*"
     },
     "autoload": {
-        "psr-4": {
-            "Griel\\": "src/"
-        }
-    }
+		"psr-4": {
+			"Crypto\\": "src/"
+		}
+	}
 }

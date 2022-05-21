@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-namespace Griel\Crypto;
+namespace Crypto;
 
 class Crypto
 {
