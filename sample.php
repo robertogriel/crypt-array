@@ -1,10 +1,8 @@
 <?php
 
-require_once('./src/Crypto.php');
+/* The Composer Autoload could be here */
 
-use Griel\Crypto\Crypto;
-
-
+use Crypto\Crypto;
 
 $array = array (
     "Color"=>"Yellow",
