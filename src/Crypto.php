@@ -1,158 +1,76 @@
 <?php
 
-/**
- * Crypto - Encrypt or Decrypt strings and Arrays in PHP
- * PHP Version: At least 5.6
- *
- * You're wellcome to see the repository of this project: https://github.com/robertogriel/crypt-array
- *
- * @author    Roberto Griel Filho <roberto@griel.com.br>
- * @copyright 2020 - 2022 - Roberto Griel Filho
- * You can use this project, but THERE IS NO WARRANTY, without even implited 
- * @note: You can use this project, but THERE IS NO WARRANTY, without even implited 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- */
-
 namespace Crypto;
+
+use RuntimeException;
 
 class Crypto
 {
+    private string $key;
+    private string $iv;
+    private bool $useBase64;
+    protected string $cipher = 'AES-128-CBC';
 
-    private $secret;
-    private $secret_iv;
-    private $base64;
-    private $alg;
-
-    public function __construct($secret,  $secret_iv, $options = [
-        'base64'=>false
-    ])
+    public function __construct(string $key, string $iv, bool $useBase64 = false)
     {
-        $this->secret = pack('a16', $secret);
-        $this->secret_iv = pack('a16', $secret_iv);
-        $this->base64 = ($options['base64']) ? $options['base64'] : false;
-        $this->alg = "AES-128-CBC";
+        $this->key = substr(hash('sha256', $key), 0, 16);
+        $this->iv = substr(hash('sha256', $iv), 0, 16);
+        $this->useBase64 = $useBase64;
     }
 
-    private function crypt($data, $q = null) 
+    public function encrypt($data)
     {
-
-
-        if (!isset($q) && $q < 1) {
-            $keys = array_keys($data);
-            $values = array_values($data);
-            $final = [];
-            $qnty = count($data);
-
-            for ($a = 0; $a < $qnty; $a++) {
-
-
-                $crypt = openssl_encrypt(
-                    $values[$a],
-                    $this->alg,
-                    $this->secret,
-                    0,
-                    $this->secret_iv
-                );
-                
-                $this->base64 ? array_push($final, base64_encode($crypt)) : array_push($final, $crypt);
-    
-                array_merge($data, $final);
+        if (is_array($data)) {
+            $result = [];
+            foreach ($data as $key => $value) {
+                $result[$key] = $this->encryptValue($value);
             }
+            return $result;
+        }
 
-            $implodeKeys = implode(',', $keys);
+        return $this->encryptValue($data);
+    }
 
-            $implodeValue = implode(',', $final);
-
-            $encrypted = array_combine (explode(',', $implodeKeys), explode(',', $implodeValue));
-
-            return $encrypted;
-
-        } else {
-
-            $crypt = openssl_encrypt(
-                $data,
-                $this->alg,
-                $this->secret,
-                0,
-                $this->secret_iv
-            );
-
-            if ($this->base64) {
-                return base64_encode($crypt);
-            } else {
-                return $crypt;
+    public function decrypt($data)
+    {
+        if (is_array($data)) {
+            $result = [];
+            foreach ($data as $key => $value) {
+                $result[$key] = $this->decryptValue($value);
             }
+            return $result;
+        }
 
-        }    
-
+        return $this->decryptValue($data);
     }
 
-    private function decrypt($data, $q = null) 
+    private function encryptValue(string $value): string
     {
+        $encrypted = openssl_encrypt($value, $this->cipher, $this->key, OPENSSL_RAW_DATA, $this->iv);
 
-        if (!isset($q) && $q < 1) {
-            $keys = array_keys($data);
-            $values = array_values($data);
-            $final = [];
-            $qnty = count($data);
+        if ($encrypted === false) {
+            throw new RuntimeException('Encryption failed.');
+        }
 
-            for ($a = 0; $a < $qnty; $a++) {
+        return $this->useBase64 ? base64_encode($encrypted) : $encrypted;
+    }
 
-                ($this->base64) ? $values[$a] = base64_decode($values[$a]) : $values[$a];
-
-                $crypt = openssl_decrypt(
-                    $values[$a],
-                    $this->alg,
-                    $this->secret,
-                    0,
-                    $this->secret_iv
-                );
-    
-                array_push($final, $crypt);
-    
-                array_merge($data, $final);
+    private function decryptValue(string $value): string
+    {
+        if ($this->useBase64) {
+            $decoded = base64_decode($value, true);
+            if ($decoded === false) {
+                throw new RuntimeException('Base64 decoding failed.');
             }
+            $value = $decoded;
+        }
 
-            $implodeKeys = implode(',', $keys);
+        $decrypted = openssl_decrypt($value, $this->cipher, $this->key, OPENSSL_RAW_DATA, $this->iv);
 
-            $implodeValue = implode(',', $final);
+        if ($decrypted === false) {
+            throw new RuntimeException('Decryption failed.');
+        }
 
-            $decrypted = array_combine (explode(',', $implodeKeys), explode(',', $implodeValue));
-
-            return $decrypted;
-
-        } else {
-
-            ($this->base64) ? $data = base64_decode($data) : $data;
-            
-            $decript = openssl_decrypt(
-                $data,
-                $this->alg,
-                $this->secret,
-                0,
-                $this->secret_iv
-            );
-
-
-            return $decript;
-
-        }    
-
-    }
-  
-    public function getEncrypted($data, $q = null)
-    {
-
-        $result = $this->crypt($data, $q);
-
-        return $result;
-
-    }
-
-    public function getDecrypted($data, $q = null)
-    {
-        $result = $this->decrypt($data, $q);
-
-        return $result;
+        return $decrypted;
     }
 }
