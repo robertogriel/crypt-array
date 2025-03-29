@@ -2,9 +2,9 @@ name: Run Tests
 
 on:
   push:
-    branches: [ 2025.5-code-update ]
+    branches: [ main ]
   pull_request:
-    branches: [ 2025.5-code-update ]
+    branches: [ main ]
 
 jobs:
   pest-tests:
