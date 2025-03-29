@@ -1,0 +1,32 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ 2025.5-code-update ]
+  pull_request:
+    branches: [ 2025.5-code-update ]
+
+jobs:
+  pest-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: ['7.4', '8.0', '8.1', '8.2']
+
+    name: PHP ${{ matrix.php }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist
+
+      - name: Run tests with Pest
+        run: ./vendor/bin/pest
