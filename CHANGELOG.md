@@ -2,7 +2,7 @@
 
 ## v2.0.0 - March 2025
 
-- Refactored the entire Crypto class to use modern PHP 7.4+ features
+- Refactored the entire Crypto class to use modern PHP 8.2+ features
 - Strongly typed properties and method arguments
 - Removed legacy methods `getEncrypted()` and `getDecrypted()`
 - Introduced `encrypt()` and `decrypt()` methods that auto-detect string or array
@@ -14,7 +14,7 @@
     - Associative arrays (including empty, large, and special characters)
 - Pest test suite with full unit coverage
 - Clean separation of internal logic (`encryptValue`, `decryptValue`)
-- Updated `composer.json` with PSR-4 autoloading and PHP 7.4+ requirement
+- Updated `composer.json` with PSR-4 autoloading and PHP 8.2+ requirement
 - Updated `README.md` with modern usage, migration guide and examples
 
 ---
