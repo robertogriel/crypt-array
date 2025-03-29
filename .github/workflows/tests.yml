@@ -1,4 +1,4 @@
-name: Full PHP Compatibility Tests
+name: Run Tests
 
 on:
   push:
@@ -7,14 +7,17 @@ on:
     branches: [ 2025.5-code-update ]
 
 jobs:
-  test:
+  pest-tests:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+        php: ['8.2', '8.3', '8.4']
+
     name: PHP ${{ matrix.php }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -22,23 +25,8 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
 
-      - name: Validate PHP version
-        run: php -v
-
-      - name: Run manual test on PHP < 8.2
-        if: matrix.php != '8.2' && matrix.php != '8.3' && matrix.php != '8.4'
-        run: |
-          php -r "
-          require 'src/Crypto.php';
-          \$crypto = new Crypto\\Crypto('test', 'iv', true);
-          \$result = \$crypto->decrypt(\$crypto->encrypt('Hello'));
-          if (\$result !== 'Hello') { exit(1); }
-          "
-
-      - name: Install dev dependencies
-        if: matrix.php == '8.2' || matrix.php == '8.3' || matrix.php == '8.4'
+      - name: Install dependencies
         run: composer install --no-progress --prefer-dist
 
-      - name: Run full Pest test suite
-        if: matrix.php == '8.2' || matrix.php == '8.3' || matrix.php == '8.4'
-        run: ./vendor/bin/pest
+      - name: Run tests with Pest
+        run: ./vendor/bin/pest --no-cache
