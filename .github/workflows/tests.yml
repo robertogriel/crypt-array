@@ -41,4 +41,4 @@ jobs:
 
       - name: Run full Pest test suite
         if: matrix.php == '8.2' || matrix.php == '8.3' || matrix.php == '8.4'
-        run: ./vendor/bin/pest --no-cache
+        run: ./vendor/bin/pest
