@@ -1,12 +1,31 @@
-<h1>Changelog</h1>
+# Changelog
 
-<h2>v1.1 - April, 2022</h2>
+## v2.0.0 - March 2025
 
- - Added the base64 option
- - Refatored the class to satisfy Composer 
+- Refactored the entire Crypto class to use modern PHP 8.2+ features
+- Strongly typed properties and method arguments
+- Removed legacy methods `getEncrypted()` and `getDecrypted()`
+- Introduced `encrypt()` and `decrypt()` methods that auto-detect string or array
+- Optional Base64 encoding as a third boolean constructor parameter
+- Improved exception handling with clear messages on failures
+- Replaced use of `implode`/`explode` logic for array handling
+- Supported encryption/decryption of:
+    - Strings (including empty)
+    - Associative arrays (including empty, large, and special characters)
+- Pest test suite with full unit coverage
+- Clean separation of internal logic (`encryptValue`, `decryptValue`)
+- Updated `composer.json` with PSR-4 autoloading and PHP 8.2+ requirement
+- Updated `README.md` with modern usage, migration guide and examples
 
 ---
 
-<h2>v1.0 - December, 2019</h2>
+## v1.1 - April, 2022
 
--  Initial public release
+- Added the base64 option
+- Refactored the class to satisfy Composer
+
+---
+
+## v1.0 - December, 2019
+
+- Initial public release

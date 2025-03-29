@@ -1,45 +1,64 @@
-<h1>Encrypt or Decrypt strings and Arrays in PHP</h1>
+Encrypt or Decrypt Strings and Arrays in PHP
 
-<p>Using this code you can encrypt/decrypt your arrays, like $_POST or any $array that you have, and you can also encrypt/decrypt one string using the same object.</p>
+A simple PHP library to encrypt/decrypt strings or associative arrays using OpenSSL and AES-128-CBC.
 
-<hr>
+Installation
 
-  ## Installation
+Install via Composer:
 
-<p>Install from Composer, running:</p>
+composer require robertogriel/crypt-array
 
-    composer require robertogriel/crypt-array
+Usage
 
-Call the class, passing your SECRET and SECRET_V inside the parameters of Crypto class. 
+Create a Crypto instance
 
-Optionally you can pass a third parameter inside a array to receive the data with base64.
+use Crypto\Crypto;
 
-Crypto\Crypto(SECRET: String, SECRET_V: String, ["base64": Boolean])
+$crypto = new Crypto('YOUR_SECRET_KEY', 'YOUR_SECRET_IV', true); // true = use base64
 
-By default, base64 option are setted to false.
+Encrypting an array:
 
-## Examples:
-  
-*Check a full example inside a file: [sample.php](https://github.com/robertogriel/crypt-array/blob/master/sample.php)*
+$data = [
+'username' => 'john',
+'email' => 'john@example.com'
+];
 
-    $object = new new Crypto\Crypto('YOUR SECRET HERE','YOUR SECRET_IV HERE');
+$encrypted = $crypto->encrypt($data);
 
-**To encrypt a array:**
+Decrypting an array:
 
-    $object->getEncrypted([]);
+$decrypted = $crypto->decrypt($encrypted);
 
----
+Encrypting a string:
 
-**To decrypt a array:**
-  
+$encrypted = $crypto->encrypt('Hello world');
 
-    $object->getDecrypted([]);
+Decrypting a string:
 
+$decrypted = $crypto->decrypt($encrypted);
 
-You can also encrypt a single string, just passing the *argument 1* after the string that will be encrypted.
+Options
 
-    $object->getEncrypted("String", 1);
+The third parameter in the constructor is a boolean to enable Base64 encoding.
 
-To decrypt a single string, add the argument 1 after the string that will be decrypted.
+$crypto = new Crypto('key', 'iv', true); // enable Base64
 
-    $object->getDecrypted("String", 1);
+Example
+
+Check the full example in sample.php
+
+Migration from older versions
+
+In previous versions, the methods were named getEncrypted() and getDecrypted(), and an additional numeric argument (1) was required to handle strings. In the new version, the library automatically detects whether you're encrypting or decrypting a string or an array.
+
+Before:
+
+$crypto->getEncrypted('string', 1);
+$crypto->getDecrypted('string', 1);
+
+Now:
+
+$crypto->encrypt('string');
+$crypto->decrypt('string');
+
+Also, getEncrypted() → encrypt() and getDecrypted() → decrypt().
